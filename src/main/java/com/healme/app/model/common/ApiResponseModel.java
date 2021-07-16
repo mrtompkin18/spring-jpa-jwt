@@ -1,12 +1,18 @@
 package com.healme.app.model.common;
 
+import com.healme.app.common.constant.ErrorConstant;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 public class ApiResponseModel {
-    private String respCode;
-    private String respDesc;
-    private ZonedDateTime timestamp;
+    protected String respCode;
+    protected String respDesc;
+    protected LocalDateTime timestamp;
+
+    public ApiResponseModel() {
+        this.respCode = ErrorConstant.SUCCESS;
+        this.timestamp = LocalDateTime.now();
+    }
 }

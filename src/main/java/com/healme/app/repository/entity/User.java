@@ -1,5 +1,6 @@
 package com.healme.app.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class User extends BaseEntity {
     @Column(length = 20, nullable = false)
     private String username;
 
+    @JsonIgnore
     @Column(length = 50, nullable = false)
     private String password;
 

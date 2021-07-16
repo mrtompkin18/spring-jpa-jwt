@@ -1,12 +1,12 @@
 package com.healme.app;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@Log4j2
 @SpringBootApplication
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class HealmeAppApplication {
 
     public static void main(String[] args) {
