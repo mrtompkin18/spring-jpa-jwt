@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: healme-app-backend
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8080
+logging:
+  level:
+    org:
+      hibernate:
+        engine:
+          transaction:
+            internal:
+              TransactionImpl: DEBUG
+---
+
+datasource:
+  url: jdbc:mysql://localhost:3306/spring_proj
+  username: root
+  password: root
+
+
