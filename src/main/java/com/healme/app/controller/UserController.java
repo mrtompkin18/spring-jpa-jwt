@@ -1,14 +1,17 @@
 package com.healme.app.controller;
 
-import com.healme.app.common.annotation.LoggingController;
+import com.healme.app.common.annotation.HealmeControllerHandler;
 import com.healme.app.common.error.ApiException;
+import com.healme.app.model.login.LoginRequestModel;
+import com.healme.app.model.login.LoginResponseModel;
 import com.healme.app.model.user.UserRegisterRequestModel;
 import com.healme.app.model.user.UserRegisterResponseModel;
-import com.healme.app.task.UserRegisterTask;
+import com.healme.app.task.LoginTask;
+import com.healme.app.task.SingUpTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,11 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private UserRegisterTask userRegisterTask;
+    private SingUpTask singUpTask;
 
-    @LoggingController
-    @RequestMapping(method = RequestMethod.POST, value = "/signup")
+    @Autowired
+    private LoginTask loginTask;
+
+    @HealmeControllerHandler
+    @PostMapping("/signup")
     public UserRegisterResponseModel signup(@RequestBody UserRegisterRequestModel request) throws ApiException {
-        return this.userRegisterTask.processTask(request);
+        return this.singUpTask.executeTask(request);
     }
+
+    @HealmeControllerHandler
+    @PostMapping("/login")
+    public LoginResponseModel login(@RequestBody LoginRequestModel request) throws ApiException {
+        return this.loginTask.executeTask(request);
+    }
+
 }

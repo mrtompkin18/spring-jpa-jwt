@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     private String username;
 
     @JsonIgnore
-    @Column(length = 50, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Column(length = 50, nullable = false)

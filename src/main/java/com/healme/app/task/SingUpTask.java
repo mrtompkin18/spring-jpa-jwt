@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserRegisterTask extends AbsGenericTask<UserRegisterRequestModel, UserRegisterResponseModel> {
-    
+public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserRegisterResponseModel> {
+
     @Autowired
     private UserService userService;
 
@@ -33,14 +33,10 @@ public class UserRegisterTask extends AbsGenericTask<UserRegisterRequestModel, U
     }
 
     @Override
-    public UserRegisterResponseModel processTask(UserRegisterRequestModel request) throws ApiException {
+    protected UserRegisterResponseModel processTask(UserRegisterRequestModel request) throws ApiException {
         String email = request.getEmail();
         String username = request.getUsername();
         String password = request.getPassword();
-
-        if (StringUtils.isAnyBlank(username, password, email)) {
-            throw new ApiException(ErrorConstant.USER_ERROR_CODE, "Username, Password or Email is null");
-        }
 
         User user = new User(username, this.passwordEncoder.encode(password), email);
         this.userService.create(user);

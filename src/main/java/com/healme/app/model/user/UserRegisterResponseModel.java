@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserRegisterResponseModel extends ApiResponseModel<User> {
-
+public class UserRegisterResponseModel extends ApiResponseModel {
+    private User data;
 }

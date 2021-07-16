@@ -11,23 +11,17 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Aspect
 @Component
 @Slf4j
-public class LoggingControllerAspect {
+public class HealmeControllerHandlerAspect {
 
-    @Around("@annotation(com.healme.app.common.annotation.LoggingController)")
+    @Around("@annotation(com.healme.app.common.annotation.HealmeControllerHandler)")
     public ApiResponseModel process(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         log.info("Request : method={}", proceedingJoinPoint.getSignature().getName());
         log.info("Request : data={}", JsonConvertorUtils.toJson(proceedingJoinPoint.getArgs()));
 
         ApiResponseModel response = (ApiResponseModel) proceedingJoinPoint.proceed();
-        if (Objects.isNull(response)) {
-            response = new ApiResponseModel<>();
-        }
-
         response.setCode(ErrorConstant.SUCCESS);
         response.setTimestamp(DateUtils.ISO_OFFSET_DATE_TIME);
         response.setStatus(HttpStatus.OK.value());
