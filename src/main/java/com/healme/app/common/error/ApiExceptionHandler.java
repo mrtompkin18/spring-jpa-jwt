@@ -26,7 +26,7 @@ public class ApiExceptionHandler extends ApiException {
         apiResponseModel.setRespCode(apiException.getErrorCode());
         apiResponseModel.setRespDesc(apiException.getErrorDesc());
         apiResponseModel.setTimestamp(LocalDateTime.now());
-        log.info("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
+        log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
         return apiResponseModel;
     }
 }
