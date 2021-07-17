@@ -39,9 +39,9 @@ public class JwtServletFilter extends OncePerRequestFilter {
         }
 
         Claim claim = this.tokenService.getClaim(token);
-        String username = claim.asString();
+        String userId = claim.asString();
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
