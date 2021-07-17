@@ -2,7 +2,6 @@ package com.healme.app.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.healme.app.util.DateUtils;
 import lombok.Data;
 
 @Data
@@ -20,9 +19,4 @@ public class ApiResponseModel {
 
     @JsonProperty("success")
     protected Boolean success;
-
-    public ApiResponseModel() {
-        this.success = Boolean.TRUE;
-        this.timestamp = DateUtils.ISO_OFFSET_DATE_TIME;
-    }
 }

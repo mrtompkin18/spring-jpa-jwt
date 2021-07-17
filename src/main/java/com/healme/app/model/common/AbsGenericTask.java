@@ -1,15 +1,15 @@
 package com.healme.app.model.common;
 
-import com.healme.app.common.annotation.RequiredPermissions;
 import com.healme.app.common.constant.ErrorCode;
+import com.healme.app.common.constant.PermissionCode;
 import com.healme.app.common.error.ApiException;
+import com.healme.app.util.CommonUtils;
+import com.healme.app.util.DateUtils;
 import com.healme.app.util.JsonConvertorUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataAccessException;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiResponseModel> {
@@ -24,12 +24,15 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
             log.info("I : method={}", stackTraceElement.getMethodName());
             log.info("I : Request={}", JsonConvertorUtils.toJson(request));
 
-            this.authorizeProcess(stackTraceElement);
+            this.validatePermissions(stackTraceElement);
             this.validateBusiness(request);
-            Rs rs = this.processTask(request);
+            Rs response = this.processTask(request);
 
-            log.info("O : Response={}", JsonConvertorUtils.toJson(rs));
-            return rs;
+            log.info("O : Response={}", JsonConvertorUtils.toJson(response));
+
+            response.setSuccess(Boolean.TRUE);
+            response.setTimestamp(DateUtils.nowISOString());
+            return response;
 
         } catch (DataAccessException e) {
             throw new ApiException(ErrorCode.DATABASE_ERROR_CODE, e.getMessage());
@@ -38,15 +41,9 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
         }
     }
 
-    protected void authorizeProcess(StackTraceElement stackTraceElement) throws ClassNotFoundException {
-        for (Method method : Class.forName(stackTraceElement.getClassName()).getMethods()) {
-            if (method.getName().equals(stackTraceElement.getMethodName())) {
-                RequiredPermissions permissions = AnnotationUtils.getAnnotation(method, RequiredPermissions.class);
-                if (permissions != null) {
-                    log.info("I : permissions={}", Arrays.toString(permissions.groups()));
-                }
-            }
-        }
+    protected void validatePermissions(StackTraceElement stackTraceElement) throws ClassNotFoundException {
+        List<PermissionCode> permission = CommonUtils.getPermissions(stackTraceElement);
+        log.info("I : permissions={}", permission);
     }
 
 }

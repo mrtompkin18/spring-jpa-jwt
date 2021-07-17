@@ -10,7 +10,10 @@ import java.util.Date;
 
 @UtilityClass
 public class DateUtils {
-    public static String ISO_OFFSET_DATE_TIME = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now());
+
+    public String nowISOString() {
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now());
+    }
 
     public Date localDateTimeToDate(LocalDateTime dateTime) {
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
