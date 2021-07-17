@@ -2,15 +2,14 @@ package com.healme.app.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,7 +19,20 @@ import javax.persistence.UniqueConstraint;
                 @UniqueConstraint(name = "users_username_constraint", columnNames = "username"),
                 @UniqueConstraint(name = "users_email_constraint", columnNames = "email"),
         })
-public class User extends BaseEntity {
+public class User extends Auditable {
+    @Id
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
+    @JsonIgnore
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(length = 20, nullable = false)
     private String username;
@@ -31,4 +43,8 @@ public class User extends BaseEntity {
 
     @Column(length = 50, nullable = false)
     private String email;
+
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

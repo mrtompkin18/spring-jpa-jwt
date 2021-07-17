@@ -24,7 +24,7 @@ public class TokenService {
     public String generateToken(User user, Date expiredAt) {
         return JWT.create()
                 .withIssuer(user.getUsername())
-                .withClaim("principal", user.getId())
+                .withClaim("principal", user.getUserId())
                 .withExpiresAt(expiredAt)
                 .sign(this.getAlgorithm());
     }

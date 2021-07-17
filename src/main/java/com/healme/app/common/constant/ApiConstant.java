@@ -7,4 +7,8 @@ public class ApiConstant {
     public interface SYMBOL {
         String EMPTY = "";
     }
+
+    public enum FLAG {
+        A, U
+    }
 }

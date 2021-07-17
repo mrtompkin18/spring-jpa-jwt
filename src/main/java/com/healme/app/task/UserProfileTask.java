@@ -26,15 +26,13 @@ public class UserProfileTask extends AbsGenericTask<UserProfileRequestModel, Use
 
     @Override
     protected UserProfileResponseModel processTask(UserProfileRequestModel request) throws ApiException {
-        Optional<String> userId = SecurityContextUtils.getUserId();
+        Optional<Long> userId = SecurityContextUtils.getUserId();
+
         if (userId.isEmpty()) {
-            throw new ApiException(ErrorCode.NOT_FOUND, "User id not found");
+            throw new ApiException(ErrorCode.NOT_FOUND, "Bad credentials");
         }
 
         Optional<User> user = this.userService.findById(userId.get());
-        if (user.isEmpty()) {
-            throw new ApiException(ErrorCode.NOT_FOUND, "User not found");
-        }
 
         return UserProfileResponseModel.builder()
                 .data(user.get())

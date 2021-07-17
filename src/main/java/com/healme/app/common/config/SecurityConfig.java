@@ -39,6 +39,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(this.jwtUnAuthentication);
 
         http.addFilterBefore(this.jwtServletFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 }

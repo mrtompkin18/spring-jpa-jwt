@@ -39,7 +39,7 @@ public class JwtServletFilter extends OncePerRequestFilter {
         }
 
         Claim claim = this.tokenService.getClaim(token);
-        String userId = claim.asString();
+        Long userId = claim.asLong();
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
