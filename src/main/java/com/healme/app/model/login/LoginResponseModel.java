@@ -5,10 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class LoginResponseModel extends ApiResponseModel {
-    private String accessToken;
+    private String token;
     private String type;
+    private LocalDateTime expiredAt;
 }

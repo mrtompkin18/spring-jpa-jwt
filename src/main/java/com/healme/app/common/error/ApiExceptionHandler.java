@@ -13,18 +13,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    private ApiResponseModel initResponse(String code, String message) {
-        ApiResponseModel apiResponseModel = new ApiResponseModel();
-        apiResponseModel.setCode(code);
-        apiResponseModel.setMessage(message);
-        apiResponseModel.setTimestamp(DateUtils.ISO_OFFSET_DATE_TIME);
-        return apiResponseModel;
-    }
-
     @ExceptionHandler(ApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponseModel handleBadRequestException(ApiException e) {
-        ApiResponseModel apiResponseModel = this.initResponse(e.getErrorCode(), e.getErrorDesc());
+        ApiResponseModel apiResponseModel = new ApiResponseModel();
+        apiResponseModel.setCode(e.getErrorCode());
+        apiResponseModel.setMessage(e.getErrorDesc());
+        apiResponseModel.setTimestamp(DateUtils.ISO_OFFSET_DATE_TIME);
         log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
         return apiResponseModel;
     }

@@ -1,5 +1,6 @@
 package com.healme.app.task;
 
+import com.healme.app.common.config.ApplicationConfig;
 import com.healme.app.common.constant.ApiConstant;
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
@@ -9,10 +10,12 @@ import com.healme.app.model.login.LoginResponseModel;
 import com.healme.app.repository.entity.User;
 import com.healme.app.service.TokenService;
 import com.healme.app.service.UserService;
+import com.healme.app.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -23,6 +26,9 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     @Override
     protected void validateBusiness(LoginRequestModel request) throws ApiException {
@@ -47,10 +53,15 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
     protected LoginResponseModel processTask(LoginRequestModel request) throws ApiException {
         Optional<User> user = this.userService.findByUsername(request.getUsername());
 
-        String token = this.tokenService.generateToken(user.get());
+        long expireTime = Long.parseLong(this.applicationConfig.getJwtExpireTime());
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expiredAt = now.plusSeconds(expireTime);
+        String token = this.tokenService.generateToken(user.get(), DateUtils.localDateTimeToDate(expiredAt));
+        
         return LoginResponseModel.builder()
-                .accessToken(token)
+                .token(token)
+                .expiredAt(expiredAt)
                 .type(ApiConstant.TOKEN_BEARER_TYPE)
                 .build();
 

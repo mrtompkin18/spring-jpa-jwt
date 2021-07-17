@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfig {
 
-    @Value("${app.secret-key}")
-    private String appSecretKey;
+    @Value("${jwt.secret-key}")
+    private String jwtSecretKey;
+    @Value("${jwt.expired-time}")
+    private String jwtExpireTime;
+
 }
