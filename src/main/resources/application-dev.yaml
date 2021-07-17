@@ -15,11 +15,12 @@ server:
 #          transaction:
 #            internal:
 #              TransactionImpl: DEBUG
----
 
 datasource:
   url: jdbc:mysql://localhost:3306/spring_proj
   username: root
   password: root
 
+app:
+  secret-key: "42fcfb05cd64e0a70e8b4ef11d8fe7537bcd5b1478485ab8b00f6f980e0b8e9e8fb03b338b3b163ec287d3f1b6ce05a0ea4febc05112715cf346ae91852b3b07"
 

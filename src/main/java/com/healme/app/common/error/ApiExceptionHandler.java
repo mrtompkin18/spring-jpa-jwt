@@ -17,7 +17,6 @@ public class ApiExceptionHandler {
         ApiResponseModel apiResponseModel = new ApiResponseModel();
         apiResponseModel.setCode(code);
         apiResponseModel.setMessage(message);
-        apiResponseModel.setStatus(HttpStatus.BAD_REQUEST.value());
         apiResponseModel.setTimestamp(DateUtils.ISO_OFFSET_DATE_TIME);
         return apiResponseModel;
     }

@@ -1,11 +1,13 @@
 package com.healme.app.task;
 
+import com.healme.app.common.constant.ApiConstant;
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
 import com.healme.app.model.common.AbsGenericTask;
 import com.healme.app.model.login.LoginRequestModel;
 import com.healme.app.model.login.LoginResponseModel;
 import com.healme.app.repository.entity.User;
+import com.healme.app.service.TokenService;
 import com.healme.app.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     protected void validateBusiness(LoginRequestModel request) throws ApiException {
@@ -36,12 +41,18 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
         if (!isPasswordMatched) {
             throw new ApiException(ErrorCode.USER_ERROR_CODE, "Password is incorrect.");
         }
-
-        //Jwt
     }
 
     @Override
     protected LoginResponseModel processTask(LoginRequestModel request) throws ApiException {
-        return new LoginResponseModel();
+        Optional<User> user = this.userService.findByUsername(request.getUsername());
+
+        String token = this.tokenService.generateToken(user.get());
+
+        return LoginResponseModel.builder()
+                .accessToken(token)
+                .type(ApiConstant.TOKEN_BEARER_TYPE)
+                .build();
+
     }
 }
