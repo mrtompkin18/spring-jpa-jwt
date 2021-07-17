@@ -1,6 +1,6 @@
 package com.healme.app.task;
 
-import com.healme.app.common.constant.ErrorConstant;
+import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
 import com.healme.app.model.common.AbsGenericTask;
 import com.healme.app.model.login.LoginRequestModel;
@@ -22,20 +22,22 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
     @Override
     protected void validateBusiness(LoginRequestModel request) throws ApiException {
         if (StringUtils.isBlank(request.getUsername())) {
-            throw new ApiException(ErrorConstant.REQUIRED, "Username is required.");
+            throw new ApiException(ErrorCode.REQUIRED, "Username is required.");
         } else if (StringUtils.isBlank(request.getPassword())) {
-            throw new ApiException(ErrorConstant.REQUIRED, "Password is required.");
+            throw new ApiException(ErrorCode.REQUIRED, "Password is required.");
         }
 
         Optional<User> user = this.userService.findByUsername(request.getUsername());
         if (user.isEmpty()) {
-            throw new ApiException(ErrorConstant.USER_ERROR_CODE, "Username is not found.");
+            throw new ApiException(ErrorCode.USER_ERROR_CODE, "Username is not found.");
         }
 
         boolean isPasswordMatched = this.userService.isPasswordMatched(request.getPassword(), user.get().getPassword());
         if (!isPasswordMatched) {
-            throw new ApiException(ErrorConstant.USER_ERROR_CODE, "Password is incorrect.");
+            throw new ApiException(ErrorCode.USER_ERROR_CODE, "Password is incorrect.");
         }
+
+        //Jwt
     }
 
     @Override

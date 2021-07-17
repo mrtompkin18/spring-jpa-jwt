@@ -1,11 +1,9 @@
 package com.healme.app.common.error;
 
-import com.healme.app.common.constant.ErrorConstant;
 import com.healme.app.model.common.ApiResponseModel;
 import com.healme.app.util.DateUtils;
 import com.healme.app.util.JsonConvertorUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,14 +26,6 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponseModel handleBadRequestException(ApiException e) {
         ApiResponseModel apiResponseModel = this.initResponse(e.getErrorCode(), e.getErrorDesc());
-        log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
-        return apiResponseModel;
-    }
-
-    @ExceptionHandler(DataAccessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponseModel handleDataAccessException(DataAccessException e) {
-        ApiResponseModel apiResponseModel = this.initResponse(ErrorConstant.DATABASE_ERROR_CODE, e.getMessage());
         log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
         return apiResponseModel;
     }

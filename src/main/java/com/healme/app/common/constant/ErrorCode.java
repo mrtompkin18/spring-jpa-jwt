@@ -1,6 +1,6 @@
 package com.healme.app.common.constant;
 
-public class ErrorConstant {
+public class ErrorCode {
     public static String UNKNOWN_ERROR_CODE = "ERR00000";
     public static String USER_ERROR_CODE = "ERR00001";
     public static String DATABASE_ERROR_CODE = "ERR00002";

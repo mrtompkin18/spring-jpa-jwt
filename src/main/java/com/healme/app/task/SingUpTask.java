@@ -1,6 +1,6 @@
 package com.healme.app.task;
 
-import com.healme.app.common.constant.ErrorConstant;
+import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
 import com.healme.app.model.common.AbsGenericTask;
 import com.healme.app.model.user.UserRegisterRequestModel;
@@ -24,11 +24,11 @@ public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserReg
     @Override
     protected void validateBusiness(UserRegisterRequestModel request) throws ApiException {
         if (StringUtils.isBlank(request.getUsername())) {
-            throw new ApiException(ErrorConstant.REQUIRED, "Username is required.");
+            throw new ApiException(ErrorCode.REQUIRED, "Username is required.");
         } else if (StringUtils.isBlank(request.getPassword())) {
-            throw new ApiException(ErrorConstant.REQUIRED, "Password is required.");
+            throw new ApiException(ErrorCode.REQUIRED, "Password is required.");
         } else if (StringUtils.isBlank(request.getEmail())) {
-            throw new ApiException(ErrorConstant.REQUIRED, "Email is required.");
+            throw new ApiException(ErrorCode.REQUIRED, "Email is required.");
         }
     }
 
