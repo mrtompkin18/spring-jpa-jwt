@@ -1,7 +1,6 @@
 package com.healme.app.common.error;
 
 import com.healme.app.model.common.ApiResponseModel;
-import com.healme.app.util.DateUtils;
 import com.healme.app.util.JsonConvertorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,9 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponseModel handleBadRequestException(ApiException e) {
         ApiResponseModel apiResponseModel = new ApiResponseModel();
-        apiResponseModel.setCode(e.getErrorCode());
-        apiResponseModel.setMessage(e.getErrorDesc());
-        apiResponseModel.setTimestamp(DateUtils.ISO_OFFSET_DATE_TIME);
+        apiResponseModel.setErrorCode(e.getErrorCode());
+        apiResponseModel.setErrorDescription(e.getErrorDesc());
+        apiResponseModel.setSuccess(Boolean.FALSE);
         log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
         return apiResponseModel;
     }

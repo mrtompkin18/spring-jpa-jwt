@@ -41,10 +41,9 @@ public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserReg
         User user = new User(username, this.passwordEncoder.encode(password), email);
         this.userService.create(user);
 
-        UserRegisterResponseModel response = new UserRegisterResponseModel();
-        response.setData(user);
-        response.setMessage("insert user successfully");
-        return response;
+        return UserRegisterResponseModel.builder()
+                .data(user)
+                .build();
     }
 }
    
