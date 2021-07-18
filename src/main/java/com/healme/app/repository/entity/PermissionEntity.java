@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Builder
@@ -20,7 +19,7 @@ import java.util.List;
                 @UniqueConstraint(name = "permission_name_constraint", columnNames = "name")
         }
 )
-public class Permission extends Auditable {
+public class PermissionEntity extends BaseAuditableEntity {
     @Id
     @SequenceGenerator(
             name = "permission_sequence",
@@ -43,12 +42,4 @@ public class Permission extends Auditable {
     @Column(name = "flag", nullable = false)
     @JsonIgnore
     private String flag;
-
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "permissions"
-    )
-    @JsonIgnore
-    private List<Role> roles;
 }

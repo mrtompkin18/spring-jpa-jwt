@@ -2,12 +2,13 @@ package com.healme.app.task;
 
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
-import com.healme.app.model.common.AbsGenericTask;
+import com.healme.app.model.common.task.AbsGenericTask;
+import com.healme.app.model.common.user.UserDetailModel;
 import com.healme.app.model.user.UserProfileRequestModel;
 import com.healme.app.model.user.UserProfileResponseModel;
-import com.healme.app.repository.entity.User;
+import com.healme.app.repository.entity.UserEntity;
 import com.healme.app.service.UserService;
-import com.healme.app.util.SecurityContextUtils;
+import com.healme.app.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,13 +27,12 @@ public class UserProfileTask extends AbsGenericTask<UserProfileRequestModel, Use
 
     @Override
     protected UserProfileResponseModel processTask(UserProfileRequestModel request) throws ApiException {
-        Optional<Long> userId = SecurityContextUtils.getUserId();
+        UserDetailModel userDetailModel = SecurityUtils.getUserDetail();
+        Optional<UserEntity> user = this.userService.findById(userDetailModel.getUserId());
 
-        if (userId.isEmpty()) {
-            throw new ApiException(ErrorCode.NOT_FOUND, "Bad credentials");
+        if (user.isEmpty()) {
+            throw new ApiException(ErrorCode.NOT_FOUND, "User not found");
         }
-
-        Optional<User> user = this.userService.findById(userId.get());
 
         return UserProfileResponseModel.builder()
                 .data(user.get())

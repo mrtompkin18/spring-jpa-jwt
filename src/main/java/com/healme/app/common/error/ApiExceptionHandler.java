@@ -1,5 +1,6 @@
 package com.healme.app.common.error;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healme.app.model.common.ApiResponseModel;
 import com.healme.app.util.JsonConvertorUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponseModel handleBadRequestException(ApiException e) {
+    public ApiResponseModel handleBadRequestException(ApiException e) throws JsonProcessingException {
         ApiResponseModel apiResponseModel = new ApiResponseModel();
         apiResponseModel.setErrorCode(e.getErrorCode());
         apiResponseModel.setErrorDescription(e.getErrorDesc());

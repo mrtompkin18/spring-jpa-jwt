@@ -4,10 +4,10 @@ import com.healme.app.common.config.ApplicationConfig;
 import com.healme.app.common.constant.ApiConstant;
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
-import com.healme.app.model.common.AbsGenericTask;
+import com.healme.app.model.common.task.AbsGenericTask;
 import com.healme.app.model.login.LoginRequestModel;
 import com.healme.app.model.login.LoginResponseModel;
-import com.healme.app.repository.entity.User;
+import com.healme.app.repository.entity.UserEntity;
 import com.healme.app.service.TokenService;
 import com.healme.app.service.UserService;
 import com.healme.app.util.DateUtils;
@@ -38,7 +38,7 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
             throw new ApiException(ErrorCode.REQUIRED, "Password is required.");
         }
 
-        Optional<User> user = this.userService.findByUsername(request.getUsername());
+        Optional<UserEntity> user = this.userService.findByUsername(request.getUsername());
         if (user.isEmpty()) {
             throw new ApiException(ErrorCode.USER_ERROR_CODE, "Username is not found.");
         }
@@ -51,14 +51,19 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
 
     @Override
     protected LoginResponseModel processTask(LoginRequestModel request) throws ApiException {
-        Optional<User> user = this.userService.findByUsername(request.getUsername());
+        Optional<UserEntity> user = this.userService.findByUsername(request.getUsername());
 
         long expireTime = Long.parseLong(this.applicationConfig.getJwtExpireTime());
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expiredAt = now.plusSeconds(expireTime);
+
+        if (user.isEmpty()) {
+            throw new ApiException(ErrorCode.USER_ERROR_CODE, "User should be not empty.");
+        }
+
         String token = this.tokenService.generateToken(user.get(), DateUtils.localDateTimeToDate(expiredAt));
-        
+
         return LoginResponseModel.builder()
                 .token(token)
                 .expiredAt(expiredAt)

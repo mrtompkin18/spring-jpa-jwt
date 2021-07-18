@@ -1,8 +1,11 @@
-package com.healme.app.model.common;
+package com.healme.app.model.common.task;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.constant.PermissionCode;
 import com.healme.app.common.error.ApiException;
+import com.healme.app.model.common.ApiRequestModel;
+import com.healme.app.model.common.ApiResponseModel;
 import com.healme.app.util.CommonUtils;
 import com.healme.app.util.DateUtils;
 import com.healme.app.util.JsonConvertorUtils;
@@ -33,7 +36,8 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
             response.setSuccess(Boolean.TRUE);
             response.setTimestamp(DateUtils.nowISOString());
             return response;
-
+        } catch (JsonProcessingException e) {
+            throw new ApiException(ErrorCode.CIPHER_ERROR_CODE, e.getMessage());
         } catch (DataAccessException e) {
             throw new ApiException(ErrorCode.DATABASE_ERROR_CODE, e.getMessage());
         } catch (ClassNotFoundException e) {

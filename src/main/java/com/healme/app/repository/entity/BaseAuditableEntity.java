@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable {
+public abstract class BaseAuditableEntity {
     @CreatedDate
     @Column(name = "create_date")
     @JsonIgnore

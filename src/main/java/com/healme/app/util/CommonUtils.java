@@ -14,6 +14,7 @@ import java.util.List;
 @Slf4j
 @UtilityClass
 public class CommonUtils {
+
     public boolean isCause(Class<? extends Throwable> expected, Throwable exc) {
         return expected.isInstance(exc) || (exc != null && isCause(expected, exc.getCause()));
     }

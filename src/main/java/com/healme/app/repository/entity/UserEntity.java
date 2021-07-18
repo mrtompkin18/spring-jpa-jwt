@@ -19,7 +19,7 @@ import javax.persistence.*;
                 @UniqueConstraint(name = "users_username_constraint", columnNames = "username"),
                 @UniqueConstraint(name = "users_email_constraint", columnNames = "email"),
         })
-public class User extends Auditable {
+public class UserEntity extends BaseAuditableEntity {
     @Id
     @SequenceGenerator(
             name = "user_sequence",
@@ -46,5 +46,5 @@ public class User extends Auditable {
 
     @OneToOne
     @JoinColumn(name = "role_id")
-    private Role role;
+    private RoleEntity roleEntity;
 }

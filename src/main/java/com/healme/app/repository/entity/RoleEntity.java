@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
-public class Role extends Auditable {
+public class RoleEntity extends BaseAuditableEntity {
     @Id
     @SequenceGenerator(
             name = "role_sequence",
@@ -48,5 +48,5 @@ public class Role extends Auditable {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<Permission> permissions;
+    private List<PermissionEntity> permissionEntities;
 }

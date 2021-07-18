@@ -2,10 +2,10 @@ package com.healme.app.task;
 
 import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.common.error.ApiException;
-import com.healme.app.model.common.AbsGenericTask;
+import com.healme.app.model.common.task.AbsGenericTask;
 import com.healme.app.model.user.UserRegisterRequestModel;
 import com.healme.app.model.user.UserRegisterResponseModel;
-import com.healme.app.repository.entity.User;
+import com.healme.app.repository.entity.UserEntity;
 import com.healme.app.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +38,16 @@ public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserReg
         String username = request.getUsername();
         String password = request.getPassword();
 
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .username(username)
                 .password(this.passwordEncoder.encode(password))
                 .email(email)
                 .build();
-        
-        this.userService.create(user);
+
+        this.userService.create(userEntity);
 
         return UserRegisterResponseModel.builder()
-                .data(user)
+                .data(userEntity)
                 .build();
     }
 }

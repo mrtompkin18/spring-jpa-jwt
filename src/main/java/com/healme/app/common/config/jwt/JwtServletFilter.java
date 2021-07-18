@@ -1,7 +1,7 @@
 package com.healme.app.common.config.jwt;
 
-import com.auth0.jwt.interfaces.Claim;
 import com.healme.app.common.constant.ApiConstant;
+import com.healme.app.model.common.user.UserDetailModel;
 import com.healme.app.service.TokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,9 @@ public class JwtServletFilter extends OncePerRequestFilter {
             return;
         }
 
-        Claim claim = this.tokenService.getClaim(token);
-        Long userId = claim.asLong();
+        UserDetailModel userDetailModel = this.tokenService.getClaim(token);
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetailModel, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);

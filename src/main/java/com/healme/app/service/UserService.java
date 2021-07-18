@@ -1,7 +1,7 @@
 package com.healme.app.service;
 
 import com.healme.app.repository.UserRepository;
-import com.healme.app.repository.entity.User;
+import com.healme.app.repository.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,15 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User create(User user) {
-        return this.userRepository.save(user);
+    public UserEntity create(UserEntity userEntity) {
+        return this.userRepository.save(userEntity);
     }
 
-    public Optional<User> findByUsername(String username) {
+    public Optional<UserEntity> findByUsername(String username) {
         return this.userRepository.findByUsername(username);
     }
 
-    public Optional<User> findById(Long id) {
+    public Optional<UserEntity> findById(Long id) {
         return this.userRepository.findById(id);
     }
 
