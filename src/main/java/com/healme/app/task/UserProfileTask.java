@@ -31,7 +31,7 @@ public class UserProfileTask extends AbsGenericTask<UserProfileRequestModel, Use
         Optional<UserEntity> user = this.userService.findById(userDetailModel.getUserId());
 
         if (user.isEmpty()) {
-            throw new ApiException(ErrorCode.NOT_FOUND, "User not found");
+            throw new ApiException(ErrorCode.NOT_FOUND, "User not found.");
         }
 
         return UserProfileResponseModel.builder()

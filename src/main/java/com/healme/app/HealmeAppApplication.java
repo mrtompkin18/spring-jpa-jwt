@@ -30,7 +30,7 @@ public class HealmeAppApplication {
         return args -> {
             PermissionEntity permissionEntity = PermissionEntity.builder()
                     .flag(ApiConstant.FLAG.A.name())
-                    .name(PermissionCode.USR010100.name())
+                    .name(PermissionCode.USR010100)
                     .description("User search")
                     .build();
 

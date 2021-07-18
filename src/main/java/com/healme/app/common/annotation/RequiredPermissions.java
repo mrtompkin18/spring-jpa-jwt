@@ -1,7 +1,5 @@
 package com.healme.app.common.annotation;
 
-import com.healme.app.common.constant.PermissionCode;
-
 import java.lang.annotation.*;
 
 @Documented
@@ -10,5 +8,5 @@ import java.lang.annotation.*;
 public @interface RequiredPermissions {
     boolean requiredAll() default true;
 
-    PermissionCode[] groups();
+    String[] groups();
 }

@@ -1,12 +1,13 @@
 package com.healme.app.common.error;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.healme.app.common.constant.ErrorCode;
 import com.healme.app.model.common.ApiResponseModel;
 import com.healme.app.util.JsonConvertorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
@@ -14,13 +15,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponseModel handleBadRequestException(ApiException e) throws JsonProcessingException {
+    public ResponseEntity<ApiResponseModel> handleBadRequestException(ApiException e) throws JsonProcessingException {
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
         ApiResponseModel apiResponseModel = new ApiResponseModel();
         apiResponseModel.setErrorCode(e.getErrorCode());
         apiResponseModel.setErrorDescription(e.getErrorDesc());
         apiResponseModel.setSuccess(Boolean.FALSE);
-        log.error("Response : data={}", JsonConvertorUtils.toJson(apiResponseModel));
-        return apiResponseModel;
+
+        log.error("O : Response={}", JsonConvertorUtils.toJson(apiResponseModel));
+
+        if (ErrorCode.PERMISSION_REQUIRED_ERROR_CODE.equals(e.getErrorCode())) {
+            httpStatus = HttpStatus.FORBIDDEN;
+        }
+
+        return ResponseEntity.status(httpStatus).body(apiResponseModel);
     }
 }

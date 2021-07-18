@@ -38,8 +38,17 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @RequiredPermissions(requiredAll = false, groups = PermissionCode.USR010500)
+    @RequiredPermissions(
+            requiredAll = false,
+            groups = {
+                    PermissionCode.USR010100,
+                    PermissionCode.USR010200,
+                    PermissionCode.USR010300,
+                    PermissionCode.USR010400,
+                    PermissionCode.USR010500,
+            }
+    )
     public UserProfileResponseModel profile() throws ApiException {
-        return this.userProfileTask.executeTask(null);
+        return this.userProfileTask.executeTask();
     }
 }
