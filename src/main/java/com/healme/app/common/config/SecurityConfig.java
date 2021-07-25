@@ -1,7 +1,7 @@
 package com.healme.app.common.config;
 
+import com.healme.app.common.config.jwt.JwtAuthenticationEntryPoint;
 import com.healme.app.common.config.jwt.JwtServletFilter;
-import com.healme.app.common.config.jwt.JwtUnAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtServletFilter jwtServletFilter;
 
     @Autowired
-    private JwtUnAuthentication jwtUnAuthentication;
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder encoder() {
@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(this.jwtUnAuthentication);
+                .authenticationEntryPoint(this.jwtAuthenticationEntryPoint);
 
         http.addFilterBefore(this.jwtServletFilter, UsernamePasswordAuthenticationFilter.class);
     }

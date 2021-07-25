@@ -21,15 +21,7 @@ import javax.persistence.*;
         })
 public class UserEntity extends BaseAuditableEntity {
     @Id
-    @SequenceGenerator(
-            name = "user_sequence",
-            sequenceName = "user_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -44,7 +36,7 @@ public class UserEntity extends BaseAuditableEntity {
     @Column(length = 50, nullable = false)
     private String email;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "role_id")
     private RoleEntity roleEntity;
 }

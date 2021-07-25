@@ -21,15 +21,7 @@ import javax.persistence.*;
 )
 public class PermissionEntity extends BaseAuditableEntity {
     @Id
-    @SequenceGenerator(
-            name = "permission_sequence",
-            sequenceName = "permission_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "permission_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "permission_id", nullable = false)
     private Long permissionId;
 

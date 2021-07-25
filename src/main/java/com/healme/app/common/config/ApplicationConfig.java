@@ -11,10 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableJpaAuditing
 @EnableWebSecurity
 public class ApplicationConfig {
-    
+
     @Value("${jwt.secret-key}")
     private String jwtSecretKey;
 
-    @Value("${jwt.expired-time}")
-    private String jwtExpireTime;
+    @Value("${jwt.expired-time-in-second}")
+    private String jwtExpireTimeInSecond;
 }

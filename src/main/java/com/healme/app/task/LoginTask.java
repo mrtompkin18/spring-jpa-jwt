@@ -53,10 +53,10 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
     protected LoginResponseModel processTask(LoginRequestModel request) throws ApiException {
         Optional<UserEntity> user = this.userService.findByUsername(request.getUsername());
 
-        long expireTime = Long.parseLong(this.applicationConfig.getJwtExpireTime());
+        long expireTimeInSecond = Long.parseLong(this.applicationConfig.getJwtExpireTimeInSecond());
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expiredAt = now.plusSeconds(expireTime);
+        LocalDateTime expiredAt = now.plusSeconds(expireTimeInSecond);
 
         if (user.isEmpty()) {
             throw new ApiException(ErrorCode.USER_ERROR_CODE, "User should be not empty.");

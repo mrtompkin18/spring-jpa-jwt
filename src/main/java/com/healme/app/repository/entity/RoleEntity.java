@@ -1,6 +1,7 @@
 package com.healme.app.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.healme.app.common.constant.ApiConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,15 +18,7 @@ import java.util.List;
 @Table(name = "roles")
 public class RoleEntity extends BaseAuditableEntity {
     @Id
-    @SequenceGenerator(
-            name = "role_sequence",
-            sequenceName = "role_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "role_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false)
     private Long roleId;
 
@@ -37,7 +30,7 @@ public class RoleEntity extends BaseAuditableEntity {
 
     @Column(name = "flag", nullable = false)
     @JsonIgnore
-    private String flag;
+    private String flag = ApiConstant.FLAG.A.name();
 
     @ManyToMany(
             fetch = FetchType.LAZY,

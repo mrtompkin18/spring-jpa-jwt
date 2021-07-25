@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 public @interface RequiredPermissions {
     boolean requiredAll() default true;
 
-    String[] groups();
+    String[] groups() default {};
 }
