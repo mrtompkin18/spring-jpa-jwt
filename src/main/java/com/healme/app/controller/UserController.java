@@ -8,9 +8,9 @@ import com.healme.app.model.login.LoginResponseModel;
 import com.healme.app.model.user.UserProfileResponseModel;
 import com.healme.app.model.user.UserRegisterRequestModel;
 import com.healme.app.model.user.UserRegisterResponseModel;
-import com.healme.app.task.LoginTask;
-import com.healme.app.task.SingUpTask;
-import com.healme.app.task.UserProfileTask;
+import com.healme.app.task.auth.LoginTask;
+import com.healme.app.task.auth.SingUpTask;
+import com.healme.app.task.user.UserProfileTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +40,8 @@ public class UserController {
     @GetMapping("/me")
     @RequiredPermissions(
             requiredAll = false,
-            groups = {PermissionCode.USR010100, PermissionCode.USR010200, PermissionCode.USR010300, PermissionCode.USR010400, PermissionCode.USR010500})
+            groups = {PermissionCode.USR010100, PermissionCode.USR010200, PermissionCode.USR010300, PermissionCode.USR010400, PermissionCode.USR010500}
+    )
     public UserProfileResponseModel profile() throws ApiException {
         return this.userProfileTask.executeTask();
     }

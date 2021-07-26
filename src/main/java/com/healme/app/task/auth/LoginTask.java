@@ -1,4 +1,4 @@
-package com.healme.app.task;
+package com.healme.app.task.auth;
 
 import com.healme.app.common.config.ApplicationConfig;
 import com.healme.app.common.constant.ApiConstant;

@@ -34,12 +34,12 @@ public class RoleEntity extends BaseAuditableEntity {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.DETACH
     )
     @JoinTable(
             name = "role_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<PermissionEntity> permissionEntities;
+    private List<PermissionEntity> permissions;
 }

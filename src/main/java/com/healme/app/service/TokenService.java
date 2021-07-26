@@ -28,19 +28,22 @@ public class TokenService {
 
     public String generateToken(UserEntity userEntity, Date expiredAt) {
         RoleEntity roleEntity = userEntity.getRoleEntity();
-        List<String> permissionCode = new ArrayList<>();
+
+        List<String> permissionCode = Collections.emptyList();
+        Long userId = userEntity.getUserId();
+        Long roleId = null;
 
         if (Objects.nonNull(roleEntity)) {
-            permissionCode = roleEntity.getPermissionEntities()
+            permissionCode = roleEntity.getPermissions()
                     .stream()
                     .map(PermissionEntity::getName)
                     .collect(Collectors.toList());
+            roleId = roleEntity.getRoleId();
         }
 
         return JWT.create()
                 .withIssuer(userEntity.getUsername())
-                .withClaim(ApiConstant.CLAIM_KEY.USER_ID, userEntity.getUserId())
-                .withClaim(ApiConstant.CLAIM_KEY.ROLE_ID, userEntity.getRoleEntity().getRoleId())
+                .withClaim(ApiConstant.CLAIM_KEY.USER_ID, userId)
                 .withClaim(ApiConstant.CLAIM_KEY.PERMISSION_CODE, permissionCode)
                 .withExpiresAt(expiredAt)
                 .sign(this.getAlgorithm());
@@ -53,7 +56,6 @@ public class TokenService {
 
         return UserDetailModel.builder()
                 .userId(claims.get(ApiConstant.CLAIM_KEY.USER_ID).asLong())
-                .roleId(claims.get(ApiConstant.CLAIM_KEY.ROLE_ID).asLong())
                 .permissionsCode(claims.get(ApiConstant.CLAIM_KEY.PERMISSION_CODE).asList(String.class))
                 .build();
     }

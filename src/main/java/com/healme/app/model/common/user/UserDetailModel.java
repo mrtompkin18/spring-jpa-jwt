@@ -13,6 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDetailModel {
     private Long userId;
-    private Long roleId;
     private List<String> permissionsCode;
 }

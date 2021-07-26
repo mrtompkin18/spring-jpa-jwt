@@ -1,4 +1,4 @@
-package com.healme.app.model.permission;
+package com.healme.app.model.common.permission;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
