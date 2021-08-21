@@ -2,9 +2,9 @@ package com.spring.app.task.auth;
 
 import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
+import com.spring.app.model.common.ApiResponseModel;
 import com.spring.app.model.common.task.AbsGenericTask;
 import com.spring.app.model.user.UserRegisterRequestModel;
-import com.spring.app.model.user.UserRegisterResponseModel;
 import com.spring.app.repository.entity.User;
 import com.spring.app.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserRegisterResponseModel> {
+public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, ApiResponseModel<User>> {
 
     @Autowired
     private UserService userService;
@@ -30,25 +30,34 @@ public class SingUpTask extends AbsGenericTask<UserRegisterRequestModel, UserReg
         } else if (StringUtils.isBlank(request.getEmail())) {
             throw new ApiException(ErrorCode.REQUIRED, "Email is required.");
         }
+
+
+        boolean isExistsUsername = this.userService.existsByUsername(request.getUsername());
+        if (isExistsUsername) {
+            throw new ApiException(ErrorCode.DUPLICATED, "Email is already used.");
+        }
+
+        boolean isExistsEmail = this.userService.existsByEmail(request.getEmail());
+        if (isExistsEmail) {
+            throw new ApiException(ErrorCode.DUPLICATED, "Email is already used.");
+        }
     }
 
     @Override
-    protected UserRegisterResponseModel processTask(UserRegisterRequestModel request) throws ApiException {
+    protected ApiResponseModel<User> processTask(UserRegisterRequestModel request) throws ApiException {
         String email = request.getEmail();
         String username = request.getUsername();
         String password = request.getPassword();
 
-        User userEntity = User.builder()
+        User user = User.builder()
                 .username(username)
                 .password(this.passwordEncoder.encode(password))
                 .email(email)
                 .build();
 
-        this.userService.create(userEntity);
+        this.userService.create(user);
 
-        return UserRegisterResponseModel.builder()
-                .data(userEntity)
-                .build();
+        return new ApiResponseModel<>(user);
     }
 }
    

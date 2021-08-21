@@ -17,15 +17,13 @@ import org.springframework.dao.DataAccessException;
 import java.util.List;
 
 @Slf4j
-public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiResponseModel> {
+public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiResponseModel<?>> {
 
-    protected abstract void validateBusiness(Rq request) throws ApiException;
+    protected void validateBusiness(Rq request) throws ApiException {
+        // waiting for implement
+    }
 
     protected abstract Rs processTask(Rq request) throws ApiException;
-
-    public Rs executeTask() throws ApiException {
-        return this.executeTask(null);
-    }
 
     public Rs executeTask(Rq request) throws ApiException {
         try {
@@ -38,12 +36,12 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
 
             this.validatePermissions(requiredPermissionModel, userDetailModel);
             this.validateBusiness(request);
+
             Rs response = this.processTask(request);
-
-            log.info("O : Response={}", JsonConvertorUtils.toJson(response));
-
             response.setSuccess(Boolean.TRUE);
             response.setTimestamp(DateUtils.nowISOString());
+
+            log.info("O : Response={}", JsonConvertorUtils.toJson(response));
 
             return response;
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ import javax.persistence.*;
                 @UniqueConstraint(name = "users_username_constraint", columnNames = "username"),
                 @UniqueConstraint(name = "users_email_constraint", columnNames = "email"),
         })
-public class User extends Auditable {
+public class User extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -35,8 +36,4 @@ public class User extends Auditable {
 
     @Column(length = 50, nullable = false)
     private String email;
-
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "role_id")
-    private Role role;
 }

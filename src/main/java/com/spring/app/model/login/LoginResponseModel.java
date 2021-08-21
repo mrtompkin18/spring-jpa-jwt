@@ -1,17 +1,14 @@
 package com.spring.app.model.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spring.app.model.common.ApiResponseModel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class LoginResponseModel extends ApiResponseModel {
+public class LoginResponseModel {
 
     @JsonProperty("token")
     private String token;

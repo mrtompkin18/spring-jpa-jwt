@@ -3,14 +3,17 @@ package com.spring.app.controller;
 import com.spring.app.common.annotation.RequiredPermissions;
 import com.spring.app.common.constant.PermissionCode;
 import com.spring.app.common.error.ApiException;
+import com.spring.app.model.common.ApiResponseModel;
+import com.spring.app.model.common.user.UserDetailModel;
 import com.spring.app.model.login.LoginRequestModel;
 import com.spring.app.model.login.LoginResponseModel;
-import com.spring.app.model.user.UserProfileResponseModel;
+import com.spring.app.model.user.UserProfileRequestModel;
 import com.spring.app.model.user.UserRegisterRequestModel;
-import com.spring.app.model.user.UserRegisterResponseModel;
+import com.spring.app.repository.entity.User;
 import com.spring.app.task.auth.LoginTask;
 import com.spring.app.task.auth.SingUpTask;
 import com.spring.app.task.user.UserProfileTask;
+import com.spring.app.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +31,12 @@ public class UserController {
     private UserProfileTask userProfileTask;
 
     @PostMapping("/signup")
-    public UserRegisterResponseModel signup(@RequestBody UserRegisterRequestModel request) throws ApiException {
+    public ApiResponseModel<User> signup(@RequestBody UserRegisterRequestModel request) throws ApiException {
         return this.singUpTask.executeTask(request);
     }
 
     @PostMapping("/login")
-    public LoginResponseModel login(@RequestBody LoginRequestModel request) throws ApiException {
+    public ApiResponseModel<LoginResponseModel> login(@RequestBody LoginRequestModel request) throws ApiException {
         return this.loginTask.executeTask(request);
     }
 
@@ -42,7 +45,11 @@ public class UserController {
             requiredAll = false,
             groups = {PermissionCode.USR010100, PermissionCode.USR010200, PermissionCode.USR010300, PermissionCode.USR010400, PermissionCode.USR010500}
     )
-    public UserProfileResponseModel profile() throws ApiException {
-        return this.userProfileTask.executeTask();
+    public ApiResponseModel<User> profile() throws ApiException {
+        UserDetailModel userDetailModel = SecurityUtils.getUserDetail();
+        Long userId = userDetailModel.getUserId();
+
+        UserProfileRequestModel request = UserProfileRequestModel.builder().userId(userId).build();
+        return this.userProfileTask.executeTask(request);
     }
 }

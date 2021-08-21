@@ -2,11 +2,17 @@ package com.spring.app.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponseModel {
+public class ApiResponseModel<T> implements Serializable {
 
     @JsonProperty("error")
     protected String errorCode;
@@ -19,4 +25,11 @@ public class ApiResponseModel {
 
     @JsonProperty("success")
     protected Boolean success;
+
+    @JsonProperty("data")
+    protected T data;
+
+    public ApiResponseModel(T data) {
+        this.data = data;
+    }
 }

@@ -4,6 +4,7 @@ import com.spring.app.common.config.ApplicationConfig;
 import com.spring.app.common.constant.ApiConstant;
 import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
+import com.spring.app.model.common.ApiResponseModel;
 import com.spring.app.model.common.task.AbsGenericTask;
 import com.spring.app.model.login.LoginRequestModel;
 import com.spring.app.model.login.LoginResponseModel;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseModel> {
+public class LoginTask extends AbsGenericTask<LoginRequestModel, ApiResponseModel<LoginResponseModel>> {
 
     @Autowired
     private UserService userService;
@@ -37,8 +38,7 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
             throw new ApiException(ErrorCode.REQUIRED, "Password is required.");
         }
 
-        User user = this.userService.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ApiException(ErrorCode.USER_ERROR_CODE, "Username is not found."));
+        User user = this.userService.findByUsername(request.getUsername());
 
         boolean isPasswordMatched = this.userService.isPasswordMatched(request.getPassword(), user.getPassword());
         if (!isPasswordMatched) {
@@ -47,9 +47,8 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
     }
 
     @Override
-    protected LoginResponseModel processTask(LoginRequestModel request) throws ApiException {
-        User user = this.userService.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ApiException(ErrorCode.USER_ERROR_CODE, "User should be not empty."));
+    protected ApiResponseModel<LoginResponseModel> processTask(LoginRequestModel request) throws ApiException {
+        User user = this.userService.findByUsername(request.getUsername());
 
         long expireTimeInSecond = Long.parseLong(this.applicationConfig.getJwtExpireTimeInSecond());
 
@@ -58,11 +57,12 @@ public class LoginTask extends AbsGenericTask<LoginRequestModel, LoginResponseMo
 
         String token = this.tokenService.generateToken(user, DateUtils.localDateTimeToDate(expiredAt));
 
-        return LoginResponseModel.builder()
+        LoginResponseModel data = LoginResponseModel.builder()
                 .token(token)
                 .expiredAt(expiredAt)
                 .type(ApiConstant.TOKEN_BEARER_TYPE)
                 .build();
 
+        return new ApiResponseModel<>(data);
     }
 }

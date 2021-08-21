@@ -12,6 +12,7 @@ import com.spring.app.model.common.user.UserDetailModel;
 import com.spring.app.repository.entity.Permission;
 import com.spring.app.repository.entity.Role;
 import com.spring.app.repository.entity.User;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,23 +27,24 @@ public class TokenService {
     @Autowired
     private ApplicationConfig applicationConfig;
 
-    public String generateToken(User userEntity, Date expiredAt) {
-        Role roleEntity = userEntity.getRole();
+    @Autowired
+    private RoleService roleService;
+
+    public String generateToken(@NonNull User user, Date expiredAt) {
+        long userId = user.getUserId();
+        Role role = this.roleService.findRoleByUserId(userId);
 
         List<String> permissionCode = Collections.emptyList();
-        Long userId = userEntity.getUserId();
-        Long roleId = null;
 
-        if (Objects.nonNull(roleEntity)) {
-            permissionCode = roleEntity.getPermissions()
+        if (Objects.nonNull(role)) {
+            permissionCode = role.getPermissions()
                     .stream()
                     .map(Permission::getName)
                     .collect(Collectors.toList());
-            roleId = roleEntity.getRoleId();
         }
 
         return JWT.create()
-                .withIssuer(userEntity.getUsername())
+                .withIssuer(user.getUsername())
                 .withClaim(ApiConstant.CLAIM_KEY.USER_ID, userId)
                 .withClaim(ApiConstant.CLAIM_KEY.PERMISSION_CODE, permissionCode)
                 .withExpiresAt(expiredAt)

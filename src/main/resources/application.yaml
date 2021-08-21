@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: healme-app-backend
+  data:
+    redis:
+      repositories:
+        enabled: false
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10000
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: 300000
+
+server:
+  port: 8080
+
+datasource:
+  url: jdbc:mysql://localhost:3306/app
+  username: root
+  password:
+
+jwt:
+  secret-key: "42fcfb05cd64e0a70e8b4ef11d8fe7537bcd5b1478485ab8b00f6f980e0b8e9e8fb03b338b3b163ec287d3f1b6ce05a0ea4febc05112715cf346ae91852b3b07"
+  expired-time-in-second: 300000

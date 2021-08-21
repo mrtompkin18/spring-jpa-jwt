@@ -1,12 +1,12 @@
 package com.spring.app;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.TimeZone;
 
-@Slf4j
+@EnableJpaRepositories(basePackages = "com.spring.app.repository")
 @SpringBootApplication
 public class SpringBootAppApplication {
     public static void main(String[] args) {
