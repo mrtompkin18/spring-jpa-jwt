@@ -1,17 +1,17 @@
 package com.spring.app.common.config;
 
+import com.spring.app.common.condition.ProdCondition;
 import com.spring.app.common.config.jwt.JwtAuthenticationEntryPoint;
 import com.spring.app.common.config.jwt.JwtServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Conditional(ProdCondition.class)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -20,11 +20,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     public static String[] PATH_ALLOWED = {
             "/user/signup",
@@ -44,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(this.jwtAuthenticationEntryPoint);
-
-        http.addFilterBefore(this.jwtServletFilter, UsernamePasswordAuthenticationFilter.class);
+                .authenticationEntryPoint(this.jwtAuthenticationEntryPoint)
+                .and()
+                .addFilterBefore(this.jwtServletFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
