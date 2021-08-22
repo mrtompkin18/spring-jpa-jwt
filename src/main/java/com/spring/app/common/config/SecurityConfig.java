@@ -26,13 +26,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    public static String[] PATH_ALLOWED = {
+            "/user/signup",
+            "/user/login",
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"};
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().disable().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/signup", "/user/login").permitAll()
+                .antMatchers(PATH_ALLOWED).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

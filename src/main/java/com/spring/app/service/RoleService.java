@@ -78,13 +78,11 @@ public class RoleService {
         this.roleRepository.delete(role);
     }
 
-    @Cacheable(value = "userRole", key = "#userId")
     @Transactional(readOnly = true)
     public Role findRoleByUserId(long userId) {
         return this.roleRepository.findByUserId(userId);
     }
-
-    @CacheEvict(value = "userRole", key = "#userId")
+    
     public Role removeUserOutOfRole(long roleId, long userId) throws ApiException {
         User user = this.userService.findById(userId);
         Role role = this.findRoleById(roleId);

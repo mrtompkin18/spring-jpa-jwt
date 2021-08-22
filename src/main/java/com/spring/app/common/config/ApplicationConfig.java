@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Data
+@EnableSwagger2
 @Configuration
 @EnableCaching
 @EnableJpaAuditing
