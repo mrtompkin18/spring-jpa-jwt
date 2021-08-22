@@ -3,7 +3,7 @@ package com.spring.app.common.database;
 import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.pagination.PageRequestModel;
-import com.spring.app.model.common.pagination.PageResponseModel;
+import com.spring.app.model.common.pagination.Pagination;
 import com.spring.app.util.DatabaseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,10 +68,10 @@ public abstract class AbsDatabase {
         return result;
     }
 
-    protected <T> PageResponseModel<T> queryForListPagination(String SQLStatement, String SQLCountStatement, MapSqlParameterSource sps, PageRequestModel page, Class<T> mappedClass) throws ApiException {
+    protected <T> Pagination<T> queryForListPagination(String SQLStatement, String SQLCountStatement, MapSqlParameterSource sps, PageRequestModel page, Class<T> mappedClass) throws ApiException {
         List<T> list = this.queryForPagination(SQLStatement, sps, mappedClass, page);
         Integer total = this.queryForCount(SQLCountStatement, sps);
-        return DatabaseUtils.getPaginationResponse(list, total);
+        return DatabaseUtils.getPagination(list, total);
     }
 
     protected Integer queryForCount(String fullSQLStatement, SqlParameterSource sps) throws ApiException {

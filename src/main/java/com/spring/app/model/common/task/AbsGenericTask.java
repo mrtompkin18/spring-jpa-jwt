@@ -5,6 +5,7 @@ import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.ApiRequestModel;
 import com.spring.app.model.common.ApiResponseModel;
+import com.spring.app.model.common.pagination.Pagination;
 import com.spring.app.model.common.permission.RequiredPermissionModel;
 import com.spring.app.model.common.user.UserDetailModel;
 import com.spring.app.util.DateUtils;
@@ -76,5 +77,13 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
         if (!isPermit) {
             throw new ApiException(ErrorCode.PERMISSION_REQUIRED_ERROR_CODE, "Permission required.");
         }
+    }
+
+    protected <T> ApiResponseModel<List<T>> getPagingResponse(Pagination<T> pagination) {
+        ApiResponseModel<List<T>> response = new ApiResponseModel<>();
+        response.setData(pagination.getList());
+        response.setFiltered(pagination.getFiltered());
+        response.setTotal(pagination.getTotal());
+        return response;
     }
 }

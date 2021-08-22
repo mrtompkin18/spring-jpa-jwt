@@ -29,6 +29,12 @@ public class ApiResponseModel<T> implements Serializable {
     @JsonProperty("data")
     protected T data;
 
+    @JsonProperty("filtered")
+    private Integer filtered;
+
+    @JsonProperty("total")
+    private Integer total;
+
     public ApiResponseModel(T data) {
         this.data = data;
     }

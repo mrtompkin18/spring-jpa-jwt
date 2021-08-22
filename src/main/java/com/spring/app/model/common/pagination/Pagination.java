@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageResponseModel<T> implements Serializable {
+public class Pagination<T> implements Serializable {
     private List<T> list = new ArrayList<>();
     private Integer filtered;
     private Integer total;
