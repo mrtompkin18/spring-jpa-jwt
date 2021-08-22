@@ -5,6 +5,7 @@ public class ApiConstant {
 
     public interface SYMBOL {
         String EMPTY = "";
+        String PERCENTAGE = "%";
     }
 
     public interface CLAIM_KEY {

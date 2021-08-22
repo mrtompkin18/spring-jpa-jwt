@@ -5,14 +5,13 @@ import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.pagination.PageResponseModel;
 import com.spring.app.model.role.CRUDRoleRequestModel;
+import com.spring.app.model.role.InquiryRoleRequestModel;
 import com.spring.app.repository.RoleRepository;
+import com.spring.app.repository.custom.CustomRoleRepository;
 import com.spring.app.repository.entity.Permission;
 import com.spring.app.repository.entity.Role;
 import com.spring.app.repository.entity.User;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,22 +25,16 @@ public class RoleService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private CustomRoleRepository customRoleRepository;
+
+    @Autowired
     private PermissionService permissionService;
 
     @Autowired
     private UserService userService;
 
-    public PageResponseModel<Role> findByCriteria(String name, String flag, Pageable pageable) {
-        Page<Role> rolePage;
-        if (StringUtils.isAllBlank(name, flag)) {
-            rolePage = this.roleRepository.findAll(pageable);
-        } else {
-            name = StringUtils.defaultString(name, StringUtils.EMPTY);
-            flag = StringUtils.defaultString(flag, StringUtils.EMPTY);
-            rolePage = this.roleRepository.findByNameContainingAndFlagIgnoreCase(name, flag, pageable);
-        }
-
-        return new PageResponseModel<>(rolePage.getContent(), pageable.getPageNumber(), pageable.getPageSize(), rolePage.getNumberOfElements());
+    public PageResponseModel<Role> inquiryByCriteria(InquiryRoleRequestModel request) throws ApiException {
+        return this.customRoleRepository.inquiryRole(request);
     }
 
     public Role createRole(CRUDRoleRequestModel request) throws ApiException {

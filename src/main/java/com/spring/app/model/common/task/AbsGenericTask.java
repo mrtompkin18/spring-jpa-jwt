@@ -27,7 +27,7 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
 
     public Rs executeTask(Rq request) throws ApiException {
         try {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[2];
             log.info("I : method={}", stackTraceElement.getMethodName());
             log.info("I : Request={}", JsonConvertorUtils.toJson(request));
 

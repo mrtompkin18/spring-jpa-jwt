@@ -32,7 +32,6 @@ public class RoleController {
     @Autowired
     private InquiryRoleTask inquiryRoleTask;
 
-    @Cacheable(value = "role", key = "{ #request.roleName, #request.flag }")
     @PostMapping
     public ApiResponseModel<PageResponseModel<Role>> inquiryRole(@RequestBody InquiryRoleRequestModel request) throws ApiException {
         return this.inquiryRoleTask.executeTask(request);

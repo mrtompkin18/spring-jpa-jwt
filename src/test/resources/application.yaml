@@ -1,6 +1,10 @@
 spring:
   application:
     name: healme-app-backend
+  data:
+    redis:
+      repositories:
+        enabled: false
   jpa:
     show-sql: true
     hibernate:
