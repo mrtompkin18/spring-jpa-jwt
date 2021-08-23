@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @UtilityClass
 public class SecurityUtils {
@@ -33,7 +34,7 @@ public class SecurityUtils {
 
     public UserDetailModel getUserDetail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (Objects.nonNull(authentication) && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object object = authentication.getPrincipal();
             if (object instanceof UserDetailModel) {
                 return (UserDetailModel) object;
