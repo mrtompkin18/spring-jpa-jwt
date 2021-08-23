@@ -1,6 +1,6 @@
 package com.spring.app.common.config;
 
-import com.spring.app.common.condition.ProdCondition;
+import com.spring.app.common.condition.NonDevCondition;
 import com.spring.app.common.config.jwt.JwtAuthenticationEntryPoint;
 import com.spring.app.common.config.jwt.JwtServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Conditional(ProdCondition.class)
+@Conditional(NonDevCondition.class)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

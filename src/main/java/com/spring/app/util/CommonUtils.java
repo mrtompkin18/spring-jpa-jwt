@@ -1,5 +1,6 @@
 package com.spring.app.util;
 
+import com.spring.app.common.constant.PropertiesConstant;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ConditionContext;
@@ -28,7 +29,7 @@ public class CommonUtils {
 
     public boolean isDevMode(ConditionContext conditionContext) {
         Environment environment = conditionContext.getEnvironment();
-        String isDevMode = environment.getProperty("development-mode.enable", "false");
+        String isDevMode = environment.getProperty(PropertiesConstant.ENV_DEV_MODE, "false");
         return Boolean.parseBoolean(isDevMode);
     }
 }
