@@ -18,4 +18,9 @@ public class DateUtils {
     public Date localDateTimeToDate(LocalDateTime dateTime) {
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
+
+    public LocalDateTime toLocalDateTime(String dateTime, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return LocalDateTime.parse(dateTime, formatter);
+    }
 }

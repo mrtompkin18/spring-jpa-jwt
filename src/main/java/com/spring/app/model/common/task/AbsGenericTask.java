@@ -5,7 +5,7 @@ import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.ApiRequestModel;
 import com.spring.app.model.common.ApiResponseModel;
-import com.spring.app.model.common.pagination.Pagination;
+import com.spring.app.model.common.pagination.PaginationModel;
 import com.spring.app.model.common.permission.RequiredPermissionModel;
 import com.spring.app.model.common.user.UserDetailModel;
 import com.spring.app.util.DateUtils;
@@ -15,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.dao.DataAccessException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiResponseModel<?>> {
@@ -26,6 +28,10 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
 
     protected abstract Rs processTask(Rq request) throws ApiException;
 
+    public Rs executeTask() throws ApiException {
+        return this.executeTask(null);
+    }
+
     public Rs executeTask(Rq request) throws ApiException {
         try {
             StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[2];
@@ -33,9 +39,8 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
             log.info("I : Request={}", JsonConvertorUtils.toJson(request));
 
             RequiredPermissionModel requiredPermissionModel = SecurityUtils.getPermissions(stackTraceElement);
-            UserDetailModel userDetailModel = SecurityUtils.getUserDetail();
 
-            this.validatePermissions(requiredPermissionModel, userDetailModel);
+            this.validatePermissions(requiredPermissionModel);
             this.validateBusiness(request);
 
             Rs response = this.processTask(request);
@@ -55,8 +60,14 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
         }
     }
 
-    protected void validatePermissions(RequiredPermissionModel requiredPermissionModel, UserDetailModel userDetail) throws ClassNotFoundException, ApiException {
-        List<String> userPermissionCode = userDetail.getPermissionsCode();
+    protected void validatePermissions(RequiredPermissionModel requiredPermissionModel) throws ClassNotFoundException, ApiException {
+        Optional<UserDetailModel> userDetailModel = SecurityUtils.getUserDetail();
+        List<String> userPermissionCode = Collections.emptyList();
+
+        if (userDetailModel.isPresent()) {
+            UserDetailModel exists = userDetailModel.get();
+            userPermissionCode = exists.getPermissionsCode();
+        }
 
         boolean isRequiredAll = requiredPermissionModel.isRequiredAll();
         List<String> servicePermissions = requiredPermissionModel.getPermissionCode();
@@ -79,7 +90,7 @@ public abstract class AbsGenericTask<Rq extends ApiRequestModel, Rs extends ApiR
         }
     }
 
-    protected <T> ApiResponseModel<List<T>> getPagingResponse(Pagination<T> pagination) {
+    protected <T> ApiResponseModel<List<T>> getPagingResponse(PaginationModel<T> pagination) {
         ApiResponseModel<List<T>> response = new ApiResponseModel<>();
         response.setData(pagination.getList());
         response.setFiltered(pagination.getFiltered());

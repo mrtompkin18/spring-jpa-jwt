@@ -2,7 +2,7 @@ package com.spring.app.task.role;
 
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.ApiResponseModel;
-import com.spring.app.model.common.pagination.Pagination;
+import com.spring.app.model.common.pagination.PaginationModel;
 import com.spring.app.model.common.task.AbsGenericTask;
 import com.spring.app.model.role.InquiryRoleRequestModel;
 import com.spring.app.repository.entity.Role;
@@ -22,7 +22,7 @@ public class InquiryRoleTask extends AbsGenericTask<InquiryRoleRequestModel, Api
 
     @Override
     protected ApiResponseModel<List<Role>> processTask(InquiryRoleRequestModel request) throws ApiException {
-        Pagination<Role> result = this.roleService.inquiryByCriteria(request);
+        PaginationModel<Role> result = this.roleService.inquiryByCriteria(request);
         return this.getPagingResponse(result);
     }
 }

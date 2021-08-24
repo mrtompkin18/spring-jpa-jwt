@@ -2,7 +2,7 @@ package com.spring.app;
 
 import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.pagination.PageRequestModel;
-import com.spring.app.model.common.pagination.Pagination;
+import com.spring.app.model.common.pagination.PaginationModel;
 import com.spring.app.model.role.InquiryRoleRequestModel;
 import com.spring.app.repository.custom.CustomRoleRepository;
 import com.spring.app.repository.entity.Role;
@@ -21,7 +21,7 @@ public class JdbcTemplateTest {
         InquiryRoleRequestModel request = new InquiryRoleRequestModel();
         request.setPaging(new PageRequestModel(1, 1));
 
-        Pagination<Role> pagination = this.customRoleRepository.inquiryRole(request);
+        PaginationModel<Role> pagination = this.customRoleRepository.inquiryRole(request);
         System.out.println(pagination);
     }
 }

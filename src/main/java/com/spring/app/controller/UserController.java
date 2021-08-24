@@ -46,7 +46,7 @@ public class UserController {
             groups = {PermissionCode.USR010100, PermissionCode.USR010200, PermissionCode.USR010300, PermissionCode.USR010400, PermissionCode.USR010500}
     )
     public ApiResponseModel<User> profile() throws ApiException {
-        UserDetailModel userDetailModel = SecurityUtils.getUserDetail();
+        UserDetailModel userDetailModel = SecurityUtils.getUserDetailOrThrow();
         Long userId = userDetailModel.getUserId();
 
         UserProfileRequestModel request = UserProfileRequestModel.builder().userId(userId).build();

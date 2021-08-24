@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Data
@@ -18,13 +21,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableCaching
 @EnableJpaAuditing
 @EnableWebSecurity
+@EnableWebSocketMessageBroker
 @EnableJpaRepositories(basePackages = "com.spring.app.repository")
 public class ApplicationConfig {
-
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Value("${jwt.secret-key:}")
     private String jwtSecretKey;

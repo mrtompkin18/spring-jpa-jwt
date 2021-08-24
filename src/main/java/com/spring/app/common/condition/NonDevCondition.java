@@ -9,6 +9,6 @@ public class NonDevCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
-        return !CommonUtils.isDevMode(conditionContext);
+        return !CommonUtils.isDevMode(conditionContext.getEnvironment());
     }
 }

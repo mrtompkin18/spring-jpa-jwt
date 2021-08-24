@@ -1,6 +1,8 @@
 package com.spring.app.util;
 
 import com.spring.app.common.annotation.RequiredPermissions;
+import com.spring.app.common.constant.ErrorCode;
+import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.permission.RequiredPermissionModel;
 import com.spring.app.model.common.user.UserDetailModel;
 import lombok.experimental.UtilityClass;
@@ -8,10 +10,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @UtilityClass
 public class SecurityUtils {
@@ -32,14 +31,18 @@ public class SecurityUtils {
                 .build();
     }
 
-    public UserDetailModel getUserDetail() {
+    public Optional<UserDetailModel> getUserDetail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.nonNull(authentication) && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object object = authentication.getPrincipal();
             if (object instanceof UserDetailModel) {
-                return (UserDetailModel) object;
+                return Optional.of((UserDetailModel) object);
             }
         }
-        return UserDetailModel.builder().build();
+        return Optional.empty();
+    }
+
+    public UserDetailModel getUserDetailOrThrow() throws ApiException {
+        return getUserDetail().orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND, "User cannot be null!"));
     }
 }

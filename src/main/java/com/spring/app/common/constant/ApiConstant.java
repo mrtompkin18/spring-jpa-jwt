@@ -14,6 +14,11 @@ public class ApiConstant {
     }
 
     public enum FLAG {
-        A, U
+        A, // active
+        I  // inactive
+    }
+
+    public interface DATE_PATTERN {
+        String yyyy_MM_dd_HHmmss = "yyyy-MM-dd HH:mm:ss";
     }
 }

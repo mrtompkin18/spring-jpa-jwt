@@ -1,7 +1,7 @@
 package com.spring.app.util;
 
 import com.spring.app.common.constant.ApiConstant;
-import com.spring.app.model.common.pagination.Pagination;
+import com.spring.app.model.common.pagination.PaginationModel;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,8 +19,8 @@ public class DatabaseUtils {
         return ApiConstant.SYMBOL.PERCENTAGE + value + ApiConstant.SYMBOL.PERCENTAGE;
     }
 
-    public <T> Pagination<T> getPagination(List<T> list, int totalRecord) {
-        Pagination<T> pageResponse = new Pagination<>();
+    public <T> PaginationModel<T> getPagination(List<T> list, int totalRecord) {
+        PaginationModel<T> pageResponse = new PaginationModel<>();
         pageResponse.setTotal(totalRecord);
         pageResponse.setList(list);
         pageResponse.setFiltered(CollectionUtils.size(list));

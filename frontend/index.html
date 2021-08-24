@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            padding: 10px;
+            margin: 0;
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>
+        <span>ระบบห้องเเชท</span>
+    </h1>
+    <ul id="chat-room"></ul>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get("clientId");
+
+        const USERID = clientId || "1";
+        const CHAT_URL = "http://localhost:8080/chat/message";
+        const SW_URL = "http://localhost:8080/ws";
+        const TOKEN =
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsInBlcm1pc3Npb25zQ29kZSI6W10sImV4cCI6MTYyOTg3OTMwOSwidXNlcklkIjoxfQ.iIoDisiVecA46dZ00dDfjlJzKWwOtd6sdenrIvd5X6U";
+
+        const loginBtn = document.querySelector("#loginBtn");
+        const logoutBtn = document.querySelector("#logoutBtn");
+        const chatRoomList = document.querySelector("#chat-room");
+
+        onLogin();
+        onSubscribeMsg();
+
+        function onSubscribeMsg() {
+            const socket = new SockJS(SW_URL);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log("Connected WebSocket! ", frame);
+                stompClient.subscribe("/topic/chat/room/list/" + USERID, function (response) {
+                    console.log("subscribe : ", response);
+                    if (response) {
+                        const datas = JSON.parse(response.body);
+                        printOutput(datas);
+                    }
+                })
+            });
+        }
+
+        function onLogin() {
+            $.ajax({
+                type: "GET",
+                url: CHAT_URL + "/room/" + USERID,
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", TOKEN);
+                }
+            }).then(function (response) {
+                if (response.success) {
+                    const datas = response.data;
+                    printOutput(datas);
+                }
+            });
+        }
+
+        function openChat(roomId, targetClientId) {
+            window.location.href = "./chat.html?clientId=" + USERID + "&targetClientId=" + targetClientId + "&roomId=" +
+                roomId;
+        }
+
+        function printOutput(datas) {
+            if (datas.length > 0) {
+                if (chatRoomList.childElementCount > 0) {
+                    while (chatRoomList.firstChild) {
+                        chatRoomList.removeChild(chatRoomList.lastChild);
+                    }
+                }
+
+                datas.forEach(element => {
+                    const roomId = element.roomId;
+                    let targetClientId = element.targetClientId;
+                    let sourceClientId = element.sourceClientId;
+
+                    if (sourceClientId != USERID) {
+                        const temp = sourceClientId;
+                        sourceClientId = targetClientId;
+                        targetClientId = temp;
+                    }
+
+                    const button = document.createElement("button");
+                    button.appendChild(document.createTextNode("chat"));
+                    button.addEventListener("click", function () {
+                        openChat(roomId, targetClientId);
+                    });
+
+                    const li = document.createElement("li");
+                    li.appendChild(document.createTextNode(targetClientId + " -> " + roomId +
+                        " "));
+                    li.appendChild(button)
+
+                    chatRoomList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement("li");
+                li.appendChild(document.createTextNode("empty chat."));
+
+                chatRoomList.appendChild(li);
+            }
+        }
+    </script>
+</body>
+
+</html>

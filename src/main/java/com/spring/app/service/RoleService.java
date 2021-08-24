@@ -3,7 +3,7 @@ package com.spring.app.service;
 import com.spring.app.common.constant.ApiConstant;
 import com.spring.app.common.constant.ErrorCode;
 import com.spring.app.common.error.ApiException;
-import com.spring.app.model.common.pagination.Pagination;
+import com.spring.app.model.common.pagination.PaginationModel;
 import com.spring.app.model.role.CRUDRoleRequestModel;
 import com.spring.app.model.role.InquiryRoleRequestModel;
 import com.spring.app.repository.RoleRepository;
@@ -36,7 +36,7 @@ public class RoleService {
     @Autowired
     private UserService userService;
 
-    public Pagination<Role> inquiryByCriteria(InquiryRoleRequestModel request) throws ApiException {
+    public PaginationModel<Role> inquiryByCriteria(InquiryRoleRequestModel request) throws ApiException {
         return this.customRoleRepository.inquiryRole(request);
     }
 
@@ -82,7 +82,7 @@ public class RoleService {
     public Role findRoleByUserId(long userId) {
         return this.roleRepository.findByUserId(userId);
     }
-    
+
     public Role removeUserOutOfRole(long roleId, long userId) throws ApiException {
         User user = this.userService.findById(userId);
         Role role = this.findRoleById(roleId);
