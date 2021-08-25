@@ -4,7 +4,6 @@ import com.spring.app.common.config.WebSocketConfig;
 import com.spring.app.common.constant.ApiConstant;
 import com.spring.app.common.database.storage.ChatMessageStorageManager;
 import com.spring.app.common.database.storage.ChatRoomStorageManager;
-import com.spring.app.common.error.ApiException;
 import com.spring.app.model.common.chat.ChatMessageInfoModel;
 import com.spring.app.model.common.chat.ChatMessagePayloadRequestModel;
 import com.spring.app.model.common.chat.ChatRoomInfoModel;
@@ -28,7 +27,7 @@ public class ChatMessageService {
     @Autowired
     private UserService userService;
 
-    public ChatMessageInfoModel message(ChatMessagePayloadRequestModel request) throws ApiException {
+    public ChatMessageInfoModel message(ChatMessagePayloadRequestModel request) {
         String sourceClientId = request.getSourceClientId();
         String targetClientId = request.getTargetClientId();
         String roomId = request.getRoomId();
@@ -49,18 +48,18 @@ public class ChatMessageService {
 
         ChatMessageInfoModel messageInfo = ChatMessageStorageManager.add(payload, roomId);
 
-        this.broadcastMsgInRooms(messageInfo, roomId);
-        this.broadcastNewRooms(sourceClientId, targetClientId);
+        this.broadcastNewMsg(messageInfo, roomId);
+        this.broadcastRoomList(sourceClientId, targetClientId);
 
         return messageInfo;
     }
 
-    private void broadcastMsgInRooms(ChatMessageInfoModel messageInfo, String roomId) {
+    private void broadcastNewMsg(ChatMessageInfoModel messageInfo, String roomId) {
         this.simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_BROADCAST_NEW_MESSAGE_IN_ROOM + "/" + roomId, messageInfo);
         log.info("send message : {}", messageInfo);
     }
 
-    private void broadcastNewRooms(String sourceClientId, String targetClientId) {
+    private void broadcastRoomList(String sourceClientId, String targetClientId) {
         List<ChatRoomInfoModel> rooms = ChatRoomStorageManager.find(sourceClientId);
         this.simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_BROADCAST_NEW_ROOM_LIST + "/" + sourceClientId, rooms);
         this.simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_BROADCAST_NEW_ROOM_LIST + "/" + targetClientId, rooms);

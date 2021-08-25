@@ -45,151 +45,148 @@
 </head>
 
 <body>
-    <div>
-        <h1>Chat Room :<span id="user"></span></h1>
-        <span>
-            <input id="msg" type="text" /> <button onclick="onSendMsg()">send</button>
-        </span>
-        <div id="chat-box"></div>
-    </div>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
+<div>
+    <h1>Chat Room :<span id="user"></span></h1>
+    <input id="msg" type="text"/>
+    <button onclick="onSendMsg()">send</button>
+    <div id="chat-box"></div>
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
 
-        const targetClientId = urlParams.get("targetClientId");
-        const sourceClientId = urlParams.get("clientId");
-        const roomId = urlParams.get("roomId");
+    const targetClientId = urlParams.get("targetClientId");
+    const sourceClientId = urlParams.get("clientId");
+    const roomId = urlParams.get("roomId");
 
-        const USERID = "1";
-        const CHAT_URL = "http://localhost:8080/chat/message";
-        const SW_URL = "http://localhost:8080/ws";
-        const TOKEN =
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsInBlcm1pc3Npb25zQ29kZSI6W10sImV4cCI6MTYyOTg3OTMwOSwidXNlcklkIjoxfQ.iIoDisiVecA46dZ00dDfjlJzKWwOtd6sdenrIvd5X6U";
+    const CHAT_URL = "http://localhost:8080/chat/message";
+    const SW_URL = "http://localhost:8080/ws";
+    const TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsInBlcm1pc3Npb25zQ29kZSI6W10sImV4cCI6MTYyOTg3OTMwOSwidXNlcklkIjoxfQ.iIoDisiVecA46dZ00dDfjlJzKWwOtd6sdenrIvd5X6U";
 
-        let stompClient = null;
-        const chatBox = document.querySelector("#chat-box");
-        const message = document.querySelector("#msg");
-        const user = document.querySelector("#user");
+    let stompClient = null;
+    const chatBox = document.querySelector("#chat-box");
+    const message = document.querySelector("#msg");
+    const user = document.querySelector("#user");
 
-        onInit();
+    onInit();
 
-        function onInit() {
-            user.innerHTML = targetClientId;
-            onFetchMsg();
-            onSubscribeMsg(roomId);
-        }
+    function onInit() {
+        user.innerHTML = targetClientId;
+        onFetchMsg();
+        onSubscribeMsg(roomId);
+    }
 
-        function onSendMsg() {
-            const data = JSON.stringify({
-                roomId,
-                sourceClientId,
-                targetClientId,
-                message: value(msg),
-                timestamp: now()
-            });
+    function onSendMsg() {
+        const data = JSON.stringify({
+            roomId,
+            sourceClientId,
+            targetClientId,
+            message: value(msg),
+            timestamp: now()
+        });
 
-            $.ajax({
-                type: "PUT",
-                url: CHAT_URL,
-                contentType: "application/json",
-                data,
-                beforeSend: function (request) {
-                    request.setRequestHeader("Authorization", TOKEN);
-                }
-            }).then(function (response) {
-                if (response.success) {
-                    message.value = "";
-                    console.log(response);
-                } else {
-                    alert(response.error_description);
-                }
-            });
-        }
+        $.ajax({
+            type: "PUT",
+            url: CHAT_URL,
+            contentType: "application/json",
+            data,
+            beforeSend: function (request) {
+                request.setRequestHeader("Authorization", TOKEN);
+            }
+        }).then(function (response) {
+            if (response.success) {
+                message.value = "";
+                console.log(response);
+            } else {
+                alert(response.error_description);
+            }
+        });
+    }
 
-        function onFetchMsg() {
-            const data = JSON.stringify({
-                roomId,
-                sourceClientId,
-                targetClientId
-            })
+    function onFetchMsg() {
+        const data = JSON.stringify({
+            roomId,
+            sourceClientId,
+            targetClientId
+        })
 
-            $.ajax({
-                type: "POST",
-                url: CHAT_URL + "/room",
-                contentType: "application/json",
-                beforeSend: function (request) {
-                    request.setRequestHeader("Authorization", TOKEN);
-                },
-                data
-            }).then(function (response) {
-                if (response.success) {
-                    const datas = response.data;
-                    if (datas.length > 0) {
-                        datas.forEach(element => {
-                            const message = element.message;
-                            const timestamp = element.timestamp;
-                            const ownerId = element.ownerId;
-                            printMsg(message, timestamp, ownerId);
-                        });
-                    }
-                }
-            });
-        }
-
-        function onSubscribeMsg(roomId) {
-            const socket = new SockJS(SW_URL);
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
-                console.log("Connected WebSocket! ", frame);
-                stompClient.subscribe("/topic/chat/room/" + roomId, function (response) {
-                    console.log("subscribe : ", response)
-                    if (response) {
-                        const element = JSON.parse(response.body);
+        $.ajax({
+            type: "POST",
+            url: CHAT_URL + "/room",
+            contentType: "application/json",
+            beforeSend: function (request) {
+                request.setRequestHeader("Authorization", TOKEN);
+            },
+            data
+        }).then(function (response) {
+            if (response.success) {
+                const datas = response.data;
+                if (datas.length > 0) {
+                    datas.forEach(element => {
                         const message = element.message;
                         const timestamp = element.timestamp;
                         const ownerId = element.ownerId;
                         printMsg(message, timestamp, ownerId);
-                    }
-                })
+                    });
+                }
+            }
+        });
+    }
+
+    function onSubscribeMsg(roomId) {
+        const socket = new SockJS(SW_URL);
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log("Connected WebSocket! ", frame);
+            stompClient.subscribe("/topic/chat/room/" + roomId, function (response) {
+                console.log("subscribe : ", response)
+                if (response) {
+                    const element = JSON.parse(response.body);
+                    const message = element.message;
+                    const timestamp = element.timestamp;
+                    const ownerId = element.ownerId;
+                    printMsg(message, timestamp, ownerId);
+                }
+            })
+        });
+    }
+
+    function onDisconnect() {
+        if (stompClient) {
+            stompClient.disconnect(function () {
+                console.log("disconnected!");
             });
         }
+    }
 
-        function onDisconnect() {
-            if (stompClient) {
-                stompClient.disconnect(function () {
-                    console.log("disconnected!");
-                });
-            }
+    function printMsg(message, timestamp, ownerId) {
+        const time = document.createElement("div");
+        time.classList.add("time");
+        time.appendChild(document.createTextNode(timestamp));
+
+        const div = document.createElement("div");
+        div.classList.add("message");
+        div.appendChild(document.createTextNode(message));
+        div.appendChild(time);
+
+        const wrap = document.createElement("div");
+        wrap.classList.add("wrap-message");
+
+        if (ownerId === sourceClientId) {
+            wrap.classList.add("owner");
         }
 
-        function printMsg(message, timestamp, ownerId) {
-            const time = document.createElement("div");
-            time.classList.add("time");
-            time.appendChild(document.createTextNode(timestamp));
+        wrap.appendChild(div);
+        chatBox.appendChild(wrap);
+    }
 
-            const div = document.createElement("div");
-            div.classList.add("message");
-            div.appendChild(document.createTextNode(message));
-            div.appendChild(time);
+    function now() {
+        return dayjs().format("YYYY-MM-DD HH:mm:ss");
+    }
 
-            const wrap = document.createElement("div");
-            wrap.classList.add("wrap-message");
-
-            if (ownerId === sourceClientId) {
-                wrap.classList.add("owner");
-            }
-
-            wrap.appendChild(div);
-            chatBox.appendChild(wrap);
-        }
-
-        function now() {
-            return dayjs().format("YYYY-MM-DD HH:mm:ss");
-        }
-
-        function value(dom) {
-            return dom.value;
-        }
-    </script>
+    function value(dom) {
+        return dom.value;
+    }
+</script>
 </body>
 
 </html>
